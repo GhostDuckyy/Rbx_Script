@@ -86,7 +86,7 @@ do
                     status:UpdateLabel("Status: Finding")
                     wait(.2)
                 until building ~= nil or getgenv().Farm == false
-                if lp.Character ~= nil and lp.Character:FindFirstChild("HumanoidRootPart") and lp.Character.Humanoid.Health > 0 then
+                if lp.Character ~= nil and lp.Character:FindFirstChild("HumanoidRootPart") then
                     repeat
                         for i,v in ipairs(building:GetChildren()) do
                             if v:IsA("Part") and v.CanCollide == true then v.CanCollide = false end
@@ -97,8 +97,6 @@ do
                         remote:FireServer(building.Main)
                         wait(.005)
                     until building.Stage.Value == "Dead" or getgenv().Farm == false
-                else
-                    repeat status:UpdateLabel("Status: Waiting Character") wait(.01) until getgenv().Farm == false or lp.Character ~= nil and lp.Character:FindFirstChild("HumanoidRootPart") and lp.Character.Humanoid.Health > 0
                 end
                 if getgenv().Farm == false then building = nil; status:UpdateLabel("Status: waiting...") end
             end
