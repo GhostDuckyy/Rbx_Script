@@ -87,7 +87,7 @@ do
                     wait(.2)
                 until building ~= nil or getgenv().Farm == false
                 if lp.Character ~= nil and lp.Character:FindFirstChild("HumanoidRootPart") then
-                    repeat
+                    --repeat
                         for i,v in ipairs(building:GetChildren()) do
                             if v:IsA("Part") and v.CanCollide == true then v.CanCollide = false end
                         end
@@ -96,7 +96,7 @@ do
                         lp.Character.HumanoidRootPart.CFrame = cf
                         remote:FireServer(building.Main)
                         wait(.005)
-                    until building.Stage.Value == "Dead" or getgenv().Farm == false
+                    --until building.Stage.Value == "Dead" or getgenv().Farm == false
                 end
                 if getgenv().Farm == false then building = nil; status:UpdateLabel("Status: waiting...") end
             end
