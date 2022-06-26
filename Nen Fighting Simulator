@@ -185,7 +185,7 @@ do
         end
     end)
 
-    local plrdrop playerTab.Dropdown({
+    local plrdrop = playerTab.Dropdown({
         Text = "Select Player",
         Callback = function(x)
             Selected = x
