@@ -21,11 +21,7 @@ local w = library.Load({
 local Players = game:GetService("Players")
 local lp = Players.LocalPlayer
 local chr = lp.Character
-local VU = game:GetService('VirtualUser')
-local TS = game:GetService('TweenService')
-local TextService = game:GetService("TextService")
 local camera = game:GetService('Workspace').CurrentCamera
-local mouse = Players.LocalPlayer:GetMouse()
 
 --// script
 do
@@ -226,7 +222,6 @@ do
             end
         end
     end})
-
 end
 
 do
@@ -272,6 +267,26 @@ do
             end)
         end
     end})
+
+    other.TextField({Text = "Set En range ( number only )", Type = "Default",Callback = function(x)
+        for i,z in ipairs(workspace["Hatsu"]:GetDescendants()) do
+            if z:IsA("WeldConstraint") and z.Part0 == chr.HumanoidRootPart then
+                local size = Vector3.new(x,x,x)
+                z.Parent.Size = size;
+            end
+        end
+    end})
+    other.ColorPicker({
+        Text = "Set En color",
+        Default = Color3.fromRGB(255,255,0),
+        Callback = function(x)
+            for i,z in ipairs(workspace["Hatsu"]:GetDescendants()) do
+                if z:IsA("WeldConstraint") and z.Part0 == chr.HumanoidRootPart then
+                    z.Parent.Color = x;
+                end
+            end
+        end
+    })
 end
 
 do
