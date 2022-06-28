@@ -22,6 +22,7 @@ local Players = game:GetService("Players")
 local lp = Players.LocalPlayer
 local chr = lp.Character
 local camera = game:GetService('Workspace').CurrentCamera
+getgenv().En_Range = nil;getgenv().En_Color = Color3.fromRGB(255,255,0);getgenv().rainbow_en = false;
 
 --// script
 do
@@ -149,6 +150,25 @@ do
     playerTab.Button({Text = "Local Player"})
     playerTab.Slider({Text = "Walk Speed", Callback = function(p) getgenv().ws = p end, Min = 0,Max = 500,Def = tonumber(chr.Humanoid.WalkSpeed)})
     playerTab.Slider({Text = "Jump Power", Callback = function(p) getgenv().jp = p end, Min = 0,Max = 500,Def = tonumber(chr.Humanoid.JumpPower)})
+
+    playerTab.TextField({Text = "Set En range ( number only )", Type = "Default",Callback = function(x)
+        getgenv().En_Range = x
+    end})
+    playerTab.ColorPicker({
+        Text = "Set En color",
+        Default = Color3.fromRGB(255,255,0),
+        Callback = function(x)
+            getgenv().En_Color = x;
+        end
+    })
+    playerTab.Toggle({
+        Text = "Make En rainbow",
+        Callback = function(x)
+            getgenv().rainbow_en = x;
+        end,
+        Enabled = false
+    })
+
     local Selected;
     local playerList = {};
     for i,v in pairs(Players:GetPlayers()) do
@@ -267,26 +287,6 @@ do
             end)
         end
     end})
-
-    other.TextField({Text = "Set En range ( number only )", Type = "Default",Callback = function(x)
-        for i,z in ipairs(workspace["Hatsu"]:GetDescendants()) do
-            if z:IsA("WeldConstraint") and z.Part0 == chr.HumanoidRootPart then
-                local size = Vector3.new(x,x,x)
-                z.Parent.Size = size;
-            end
-        end
-    end})
-    other.ColorPicker({
-        Text = "Set En color",
-        Default = Color3.fromRGB(255,255,0),
-        Callback = function(x)
-            for i,z in ipairs(workspace["Hatsu"]:GetDescendants()) do
-                if z:IsA("WeldConstraint") and z.Part0 == chr.HumanoidRootPart then
-                    z.Parent.Color = x;
-                end
-            end
-        end
-    })
 end
 
 do
@@ -296,13 +296,54 @@ do
     Credit.Button({Text = "Copy Discord Invite", Callback = function() setclipboard("https://discord.gg/TFUeFEESVv") end})
 end
 
-
---// interesting part
-if lp.UserId == game.CreatorId or lp.UserId == 2642072820 then
-lp:Kick("why hack urself game?")
-elseif lp:IsFriendsWith(game.CreatorId) or lp:IsFriendsWith(2642072820) then
-lp:Kick("why hack ur friends game?")
-end
-
 --// bypass some stuff
 if lp.PlayerScripts:FindFirstChild("AgilityUpdater") then lp.PlayerScripts:FindFirstChild("AgilityUpdater"):Destroy() end
+
+-- setup
+game:GetService("RunService").RenderStepped:Connect(function()
+    local en = get_EN()
+    if en ~= nil then
+        if getgenv().En_Range ~= nil then
+            local range = Vector3.new(getgenv().En_Range,getgenv().En_Range,getgenv().En_Range)
+            en.Size = range
+        end
+
+        if not getgenv().rainbow_en then
+            en.Color = getgenv().En_Color;
+        end
+
+        if getgenv().rainbow_en == true then
+            en.Color = Color3.fromHSV(tick() % 5 / 5, 1,1);
+        end
+    end
+end)
+
+function get_EN()
+    if workspace:FindFirstChild("Hatsu") then
+        for i,z in ipairs(workspace["Hatsu"]:GetDescendants()) do
+            if z:IsA("WeldConstraint") and z.Part0 == chr.HumanoidRootPart then
+                return z.Parent
+            end
+        end
+    end
+    return nil;
+end
+
+while true do
+    for i,plr in ipairs(Players:GetPlayers()) do
+        if plr.Character ~= nil then
+            for _,v in ipairs(plr.Character:GetChildren()) do
+                if v:IsA("Highlight") and v.Name == "EnSeen" then
+                    if not getgenv().rainbow_en then
+                        v.FillColor = getgenv().En_Color;
+                    end
+
+                    if getgenv().rainbow_en == true then
+                        v.FillColor = Color3.fromHSV(tick() % 5 / 5, 1,1);
+                    end
+                end
+            end
+        end
+    end
+    wait(.15)
+end
