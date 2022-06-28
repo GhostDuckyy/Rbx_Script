@@ -275,9 +275,21 @@ do
         end
     end})
     other.Button({Text = "Invisible [R15]", Callback = function()
-        if (chr) ~= nil then
-            if chr:FindFirstChild("LowerTorso") then
-                chr:FindFirstChild("LowerTorso"):destroy()
+        if chr:FindFirstChild("LowerTorso") then
+            chr:FindFirstChild("LowerTorso"):destroy()
+
+            if chr:FindFirstChild("HumanoidRootPart") ~= nil then
+                for i,v in ipairs(chr.HumanoidRootPart:GetDescendants()) do
+                    if v:IsA("TextLabel") and v.Name == "DisplayName" then
+                        v:Destroy()
+                    end
+                    if v:IsA("TextLabel") and v.Name == "Reputation" then
+                        v:Destroy()
+                    end
+                    if v:IsA("Frame") and v.Name == "RankFrame" then
+                        v:Destroy()
+                    end
+                end
             end
         end
     end})
