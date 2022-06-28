@@ -274,6 +274,13 @@ do
             end
         end
     end})
+    other.Button({Text = "Invisible [R15]", Callback = function()
+        if (chr) ~= nil then
+            if chr:FindFirstChild("LowerTorso") then
+                chr:FindFirstChild("LowerTorso"):destroy()
+            end
+        end
+    end})
     other.Button({Text = "Anti Afk", Callback = function()
         -- code form DekuDimz
         if getconnections then
