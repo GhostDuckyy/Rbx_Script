@@ -298,13 +298,6 @@ do
                     end
                 end
             end
-            if chr:FindFirstChild("UpperTorso") then
-                wait(0.5)
-                if workspace:FindFirstChild("Place_Holder") then
-                    local cf = workspace:FindFirstChild("Place_Holder", true).CFrame * CFrame.new(0,8,0)
-                    chr:FindFirstChild("UpperTorso").CFrame = cf
-                end
-            end
         end
     end})
     other.Button({Text = "Anti Afk", Callback = function()
@@ -385,12 +378,5 @@ lp.CharacterAdded:Connect(function(char)
     wait(0.5)
     chr = char
 end)
-
-local TorsoHolder = Instance.new("Part", workspace)
-TorsoHolder.Anchored = true
-TorsoHolder.Name = "Place_Holder"
-TorsoHolder.Transparency = 1
-TorsoHolder.Size = Vector3.new(50,3,50)
-TorsoHolder.CFrame = CFrame.new(-671.200012, -100, 635.500061)
 
 --// esp steup \\
