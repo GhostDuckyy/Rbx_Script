@@ -299,15 +299,7 @@ do
                 end
             end
             if chr:FindFirstChild("UpperTorso") then
-                if not workspace:FindFirstChild("TorsoHolder") then
-                    local part = Instance.new("Part", workspace)
-                    part.Anchored = true
-                    part.Name = "TorsoHolder"
-                    part.Transparency = 1
-                    part.Size = Vector3.new(50,50,50)
-                    part.CFrame = CFrame.new(-671.200012, -100, 635.500061)
-                end
-                wait(0.2)
+                wait(0.5)
                 if workspace:FindFirstChild("TorsoHolder") then
                     local cf = workspace:FindFirstChild("TorsoHolder", true).CFrame * CFrame.new(0,5,0)
                     chr:FindFirstChild("UpperTorso").CFrame = cf
@@ -390,7 +382,17 @@ while true do
 end
 
 lp.CharacterAdded:Connect(function(char)
+    wait(0.5)
     chr = char
 end)
+
+if not workspace:FindFirstChild("TorsoHolder") then
+    local TorsoHolder = Instance.new("Part", workspace)
+    TorsoHolder.Anchored = true
+    TorsoHolder.Name = "TorsoHolder"
+    TorsoHolder.Transparency = 1
+    TorsoHolder.Size = Vector3.new(50,3,50)
+    TorsoHolder.CFrame = CFrame.new(-671.200012, -100, 635.500061)
+end
 
 --// esp steup \\
