@@ -300,8 +300,8 @@ do
             end
             if chr:FindFirstChild("UpperTorso") then
                 wait(0.5)
-                if workspace:FindFirstChild("TorsoHolder") then
-                    local cf = workspace:FindFirstChild("TorsoHolder", true).CFrame * CFrame.new(0,5,0)
+                if workspace:FindFirstChild("Place_Holder") then
+                    local cf = workspace:FindFirstChild("Place_Holder", true).CFrame * CFrame.new(0,8,0)
                     chr:FindFirstChild("UpperTorso").CFrame = cf
                 end
             end
@@ -386,10 +386,10 @@ lp.CharacterAdded:Connect(function(char)
     chr = char
 end)
 
-if not workspace:FindFirstChild("TorsoHolder") then
+if not workspace:FindFirstChild("Place_Holder") then
     local TorsoHolder = Instance.new("Part", workspace)
     TorsoHolder.Anchored = true
-    TorsoHolder.Name = "TorsoHolder"
+    TorsoHolder.Name = "Place_Holder"
     TorsoHolder.Transparency = 1
     TorsoHolder.Size = Vector3.new(50,3,50)
     TorsoHolder.CFrame = CFrame.new(-671.200012, -100, 635.500061)
