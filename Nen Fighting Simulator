@@ -386,13 +386,11 @@ lp.CharacterAdded:Connect(function(char)
     chr = char
 end)
 
-if not workspace:FindFirstChild("Place_Holder") then
-    local TorsoHolder = Instance.new("Part", workspace)
-    TorsoHolder.Anchored = true
-    TorsoHolder.Name = "Place_Holder"
-    TorsoHolder.Transparency = 1
-    TorsoHolder.Size = Vector3.new(50,3,50)
-    TorsoHolder.CFrame = CFrame.new(-671.200012, -100, 635.500061)
-end
+local TorsoHolder = Instance.new("Part", workspace)
+TorsoHolder.Anchored = true
+TorsoHolder.Name = "Place_Holder"
+TorsoHolder.Transparency = 1
+TorsoHolder.Size = Vector3.new(50,3,50)
+TorsoHolder.CFrame = CFrame.new(-671.200012, -100, 635.500061)
 
 --// esp steup \\
