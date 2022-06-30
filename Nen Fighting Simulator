@@ -285,7 +285,7 @@ do
     other.Button({Text = "Invisible [R15]", Callback = function()
         if chr:FindFirstChild("LowerTorso") then
             chr:FindFirstChild("LowerTorso"):Destroy()
-            if chr:FindFirstChild("HumanoidRootPart") ~= nil then
+            if chr:FindFirstChild("HumanoidRootPart") then
                 for i,v in ipairs(chr.HumanoidRootPart:GetDescendants()) do
                     if v:IsA("TextLabel") and v.Name == "DisplayName" then
                         v:Destroy()
@@ -303,12 +303,12 @@ do
     other.Button({Text = "Anti Afk", Callback = function()
         -- code form DekuDimz
         if getconnections then
-            for _, v in next, getconnections(game:GetService("Players").LocalPlayer.Idled) do
+            for _, v in next, getconnections(lp.Idled) do
                 v:Disable()
             end
         end
         if not getconnections then
-            game:GetService("Players").LocalPlayer.Idled:connect(function()
+            lp.Idled:Connect(function()
                 game:GetService("VirtualUser"):ClickButton2(Vector2.new())
             end)
         end
@@ -355,26 +355,29 @@ function get_EN()
     return nil;
 end
 
-while true do
-    for i,plr in ipairs(Players:GetPlayers()) do
-        if plr.Character ~= nil then
-            for _,v in ipairs(plr.Character:GetChildren()) do
-                if v:IsA("Highlight") and v.Name == "EnSeen" then
-                    if not getgenv().rainbow_en then
-                        v.FillColor = getgenv().En_Color;
-                    end
+task.spawn(function()
+    while true do
+        for i,plr in ipairs(Players:GetPlayers()) do
+            if plr.Character ~= nil then
+                for _,v in ipairs(plr.Character:GetChildren()) do
+                    if v:IsA("Highlight") and v.Name == "EnSeen" then
+                        if not getgenv().rainbow_en then
+                            v.FillColor = getgenv().En_Color;
+                        end
 
-                    if getgenv().rainbow_en == true then
-                        v.FillColor = Color3.fromHSV(tick() % 5 / 5, 1,1);
+                        if getgenv().rainbow_en == true then
+                            v.FillColor = Color3.fromHSV(tick() % 5 / 5, 1,1);
+                        end
                     end
                 end
             end
         end
+        wait(.15)
     end
-    wait(.15)
-end
+end)
 
 lp.CharacterAdded:Connect(function(char)
+    print("Found Client Character")
     wait(0.5)
     chr = char
 end)
