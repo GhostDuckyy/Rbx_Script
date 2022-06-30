@@ -7,6 +7,10 @@ end
 if identifyexecutor then
     print("Hello "..identifyexecutor().." User!")
 end
+
+--// esp library \\
+
+
 --// Material Lua library
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/MaterialLua/master/Module.lua"))()
 local w = library.Load({
@@ -245,6 +249,10 @@ do
 end
 
 do
+    -- local visual = w.New({Title = "Visual"})
+end
+
+do
     local other = w.New({Title = "Other"})
     other.Button({Text = "Misc"})
     other.Button({Text = "Remove nametag", Callback = function()
@@ -276,8 +284,7 @@ do
     end})
     other.Button({Text = "Invisible [R15]", Callback = function()
         if chr:FindFirstChild("LowerTorso") then
-            chr:FindFirstChild("LowerTorso"):destroy()
-
+            chr:FindFirstChild("LowerTorso"):Destroy()
             if chr:FindFirstChild("HumanoidRootPart") ~= nil then
                 for i,v in ipairs(chr.HumanoidRootPart:GetDescendants()) do
                     if v:IsA("TextLabel") and v.Name == "DisplayName" then
@@ -289,6 +296,21 @@ do
                     if v:IsA("Frame") and v.Name == "RankFrame" then
                         v:Destroy()
                     end
+                end
+            end
+            if chr:FindFirstChild("UpperTorso") then
+                if not workspace:FindFirstChild("TorsoHolder") then
+                    local part = Instance.new("Part", workspace)
+                    part.Anchored = true
+                    part.Name = "TorsoHolder"
+                    part.Transparency = 1
+                    part.Size = Vector3.new(50,50,50)
+                    part.CFrame = CFrame.new(-671.200012, -100, 635.500061)
+                end
+                wait(0.2)
+                if workspace:FindFirstChild("TorsoHolder") then
+                    local cf = workspace:FindFirstChild("TorsoHolder", true).CFrame * CFrame.new(0,5,0)
+                    chr:FindFirstChild("UpperTorso").CFrame = cf
                 end
             end
         end
@@ -312,13 +334,13 @@ do
     local Credit = w.New({Title = "Credit"})
     Credit.Button({Text = "Scripting: Ghost-Ducky#7698"})
     Credit.Button({Text = "UI: Material Lua"})
-    Credit.Button({Text = "Copy Discord Invite", Callback = function() setclipboard("https://discord.gg/TFUeFEESVv") end})
+    Credit.Button({Text = "Copy Discord Invite", Callback = function() pcall(function() setclipboard("https://discord.gg/TFUeFEESVv") end) end})
 end
 
 --// bypass some stuff
 if lp.PlayerScripts:FindFirstChild("AgilityUpdater") then lp.PlayerScripts:FindFirstChild("AgilityUpdater"):Destroy() end
 
--- setup
+--// En Stuff
 game:GetService("RunService").RenderStepped:Connect(function()
     local en = get_EN()
     if en ~= nil then
@@ -366,3 +388,5 @@ while true do
     end
     wait(.15)
 end
+
+--// esp steup \\
