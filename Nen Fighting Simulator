@@ -283,22 +283,32 @@ do
         end
     end})
     other.Button({Text = "Invisible [R15]", Callback = function()
-        if chr:FindFirstChild("LowerTorso") then
-            chr:FindFirstChild("LowerTorso"):Destroy()
-            if chr:FindFirstChild("HumanoidRootPart") then
-                for i,v in ipairs(chr.HumanoidRootPart:GetDescendants()) do
-                    if v:IsA("TextLabel") and v.Name == "DisplayName" then
-                        v:Destroy()
-                    end
-                    if v:IsA("TextLabel") and v.Name == "Reputation" then
-                        v:Destroy()
-                    end
-                    if v:IsA("Frame") and v.Name == "RankFrame" then
-                        v:Destroy()
-                    end
+        -- remove all tag
+        if chr:FindFirstChild("HumanoidRootPart") then
+            for i,v in ipairs(chr.HumanoidRootPart:GetDescendants()) do
+                if v:IsA("TextLabel") and v.Name == "DisplayName" then
+                    v:Destroy()
+                end
+                if v:IsA("TextLabel") and v.Name == "Reputation" then
+                    v:Destroy()
+                end
+                if v:IsA("Frame") and v.Name == "RankFrame" then
+                    v:Destroy()
                 end
             end
         end
+
+        -- fully invisible form https://v3rmillion.net/showthread.php?tid=1177287
+        local newroot = chr:FindFirstChild("LowerTorso").Root:Clone();
+        local humanroot = chr.HumanoidRootPart;
+        local oldsix = humanroot.CFrame;
+        humanroot.Parent = workspace;
+        chr.PrimaryPart = humanroot;
+        chr:MoveTo(Vector3.new(oldsix.X,9e9,oldsix.Y));
+        humanroot.Parent = chr;
+        task.wait(.6)
+        newroot.Parent = humanroot;
+        humanroot.CFrame = oldsix;
     end})
     other.Button({Text = "Anti Afk", Callback = function()
         -- code form DekuDimz
@@ -378,7 +388,6 @@ end)
 
 lp.CharacterAdded:Connect(function(char)
     print("Found Client Character")
-    wait(0.5)
     chr = char
 end)
 
