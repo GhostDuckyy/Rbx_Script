@@ -12,6 +12,23 @@ local camera = game:GetService('Workspace').CurrentCamera
 local mouse = Players.LocalPlayer:GetMouse()
 local Pathfinding = game:GetService("PathfindingService")
 
+local World_Type = nil;
+
+repeat
+    if World_Type == nil then
+        if game.PlaceId == 2753915549 then
+            World_Type = 1;
+        elseif game.PlaceId == 4442272183 then
+            World_Type = 2;
+        elseif game.PlaceId == 7449423635 then
+            World_Type = 3;
+        else
+            World_Type = 0;
+        end
+    end
+    task.wait(.1)
+until World_Type == 0 or World_Type ~= nil
+
 local auto = w:MakeTab({
     Name = "Automation",
 	Icon = nil,
@@ -51,6 +68,50 @@ do
             ToolsDrop:Refresh({table.unpack(ToolsTable)}, true)
         end
     })
+
+    do
+        local boolean = false;
+        getgenv().AutoAccessory = false;
+        auto:AddToggle({
+            Name = "Auto wear Accessory",
+            Default = false,
+            Callback = function(x)
+                getgenv().AutoAccessory = x
+            end
+        })
+        spawn(function()
+            while getgenv().AutoAccessory == true do
+                if lp.Character ~= nil and lp.Character:FindFirstChild("Humanoid") then
+                    for i,v in pairs(lp.Character:GetChildren()) do
+                        if v ~= nil and v:IsA("Accessory") and v:FindFirstChild("Handle") then
+                            if v:FindFirstChild("IsAccessory") and v["IsAccessory"]:IsA("BoolValue") then
+                                boolean = true;
+                            else
+                                boolean = false;
+                            end
+                        end
+                    end
+
+                    if boolean == false then
+                        if lp.Character:FindFirstChildOfClass("Tool") and lp.Character[lp.Character:FindFirstChildOfClass("Tool").Name].ToolTip == "Wear" then
+                            if lp.Character[lp.Character:FindFirstChildOfClass("Tool").Name]:FindFirstChildOfClass("RemoteFunction") then
+                                lp.Character[lp.Character:FindFirstChildOfClass("Tool").Name]:FindFirstChildOfClass("RemoteFunction"):InvokeServer()
+                                wait(0.3)
+                                lp.Character.Humanoid:UnequipTools()
+                            end
+                        end
+
+                        for i,v in pairs(lp.Backpack:GetChildren()) do
+                            if v ~= nil and v.ToolTip == "Wear" then
+                                lp.Character.Humanoid:EquipTool(v)
+                            end
+                        end
+                    end
+                end
+                task.wait()
+            end
+        end)
+    end
 
     -- Farm
     auto:AddParagraph("Farm","Farm mobs & boss")
@@ -130,6 +191,25 @@ local chr = w:MakeTab({
 })
 
 do
+    chr:AddButton({
+        Name = "Dash without enegry",
+        Callback = function()
+            local mt = getrawmetatable(game)
+            local old = mt.__namecall
+            setreadonly(mt,false)
+            mt.__namecall = newcclosure(function(self, ...)
+            local args = {...}
+            if getnamecallmethod() == 'FireServer' and self.Name == 'CommE' then
+                if tostring(args[1]):lower() == "dodge" then
+                    print("Used Dodge")
+                args[3] = 0;
+                end
+            end
+            return old(self, unpack(args))
+            end)
+            setreadonly(mt,true)
+        end
+    })
     -- Data
     if lp:FindFirstChild("Data") then
         do
@@ -203,8 +283,8 @@ do
                 end
             end
         })
-        -- inventory
-        chr:AddButton({
+        -- inventory ( not working )
+        --[[chr:AddButton({
             Name = "Inventory",
             Callback = function()
                 local uiName = "Inventory"
@@ -214,7 +294,7 @@ do
                     end
                 end
             end
-        })
+        })]]
         -- awakening toggler
         chr:AddButton({
             Name = "Awakening Toggler",
@@ -229,7 +309,7 @@ do
         })
         -- enchant colors
         chr:AddButton({
-            Name = "Enchant colors",
+            Name = "Enchant/Buso colors",
             Callback = function()
                 local uiName = "Colors"
                 for i,ui in pairs(lp.PlayerGui:GetDescendants()) do
@@ -284,11 +364,7 @@ do
         CustomName = function(obj)
             return tostring(obj.Name)
         end,
-        Color = function(obj)
-            if obj:FindFirstChild("Fruit") then
-                return obj.Fruit.Color
-            end
-        end,
+        Color = Color3.new(1,1,1),
         IsEnabled = "Fruit1"
     })
     Esplibrary:AddObjectListener(workspace, {
@@ -300,11 +376,7 @@ do
             end
         end,
         CustomName = "Fruit",
-        Color = function(obj)
-            if obj:FindFirstChild("Handle") then
-                return obj.Handle.Color
-            end
-        end,
+        Color = Color3.new(1,1,1),
         IsEnabled = "Fruit2"
     })
 
@@ -378,8 +450,8 @@ do
     })
 end
 
-local ff2 = w:MakeTab({
-    Name = "Fruit & Flower",
+local F_more = w:MakeTab({
+    Name = "Fruit & More",
     Icon = nil,
     PremiumOnly = false
 })
@@ -387,8 +459,8 @@ local ff2 = w:MakeTab({
 do
     -- bring stuff
     do
-        ff2:AddLabel("Bring Stuff")
-        ff2:AddButton({
+        F_more:AddLabel("Bring Stuff")
+        F_more:AddButton({
             Name = "Bring All Fruit",
             Callback = function()
                 if lp ~= nil and lp.Character ~= nil and lp.Character.PrimaryPart ~= nil then
@@ -407,7 +479,7 @@ do
                             end
                         end
                     else
-                        print("Unable: firetouchinterest")
+                        makenotif("Error","Unable: firetouchinterest", 5)
                         for i,v in pairs(workspace:GetDescendants()) do
                             if v and v:IsA("Tool") and v:FindFirstChild("Fruit") and v:FindFirstChild("Handle") then
                                 local cf = lp.Character.PrimaryPart.CFrame * CFrame.new(0,1.5,.1)
@@ -425,7 +497,7 @@ do
             end
         })
 
-        ff2:AddButton({
+        F_more:AddButton({
             Name = "Bring Flower",
             Callback = function()
                 if lp ~= nil and lp.Chracter ~= nil and lp.Character.PrimaryPart ~= nil then
@@ -440,7 +512,7 @@ do
                             end
                         end
                     else
-                        print("Unable: firetouchinterest")
+                        makenotif("Error","Unable: firetouchinterest", 5)
                         for _,v in pairs(workspace:GetChildren()) do
                             if v and v:IsA("Part") and v:FindFirstChildOfClass("TouchTransmitter") then
                                 if v.Name == "Flower1" or v.Name == "Flower2" then
@@ -454,6 +526,35 @@ do
             end
         })
     end
+
+    -- Raids
+    do
+        F_more:AddLabel("Raids")
+
+        do
+            -- Kill aura
+            getgenv().Killaura = false;
+            F_more:AddToggle({
+                Name = "Kill Aura",
+                Default = false,
+                Callback = function(x)
+                    getgenv().Killaura = x
+                end
+            })
+        end
+        game:GetService("RunService").RenderStepped:Connect(function()
+            if workspace:FindFirstChild("Enemies") and getgenv().Killaura == true then
+                for i,mob in pairs(workspace.Enemies:GetDescendants()) do
+                    if mob ~= nil and mob:FindFirstChild("Humanoid") and mob["Humanoid"].Health > 0 or mob["Humanoid"].Health ~= 0.1 then
+                        mob.Humanoid.Health = 0.1;
+                        wait(.5)
+                        mob.Humanoid.Health = 0;
+                    end
+                end
+            end
+        end)
+    end
+
 end
 
 local waypoint = w:MakeTab({
@@ -600,7 +701,7 @@ do
 
                         if v:IsA("Tool") and v.ToolTip == "Blox Fruit" and v:FindFirstChild("AwakenedMoves") then
                             if v.AwakenedMoves:FindFirstChild("Z") and v.AwakenedMoves.Z:IsA("Folder") then
-                                makenotif(tostring("Fruit: Awakened "..v.Name), tostring(v.ToolTip), 5)
+                                makenotif(tostring("Fruit: "..v.Name), tostring("Awakened Fruit"), 5)
                             end
                         elseif v:IsA("Tool") and v.ToolTip == "Blox Fruit" and v:FindFirstChild("AwakenedMoves") == nil then
                             makenotif(tostring("Fruits: "..v.Name), tostring(v.ToolTip), 5)
@@ -620,10 +721,7 @@ do
                         p = plr
                     end
                 end
-                if lp.Character and lp.Character.HumanoidRootPart ~= nil and p.Character and p.Character.HumanoidRootPart ~= nil then
-                    local human = p.Character.HumanoidRootPart;
-                    tp(human.Position.X, human.Position.Y * 15, human.Position.Z * -0.5)
-                end
+                warn("haven't done")
             end
         })
     end
@@ -633,7 +731,7 @@ do
         misc:AddButton({
             Name = "Always Day",
             Callback = function()
-                game:GetService("RunService").Heartbeat:Connect(function()
+                game:GetService("RunService").RenderStepped:Connect(function()
                     if game:WaitForChild("Lighting") then
                         game:GetService("Lighting").ClockTime = 8;
                     end
@@ -664,7 +762,7 @@ do
                             local part = Instance.new("Part", workspace.Map:FindFirstChild("WaterBase-Plane"))
                             part.Name = "airPart"
                             part.Anchored = true
-                            part.Transparency = 0
+                            part.Transparency = 1
                             part.Color = Color3.new(1,0,0)
                             part.CanCollide = true
                             part.Size = game:GetService("Workspace").Map["WaterBase-Plane"].Size
@@ -677,7 +775,18 @@ do
         end
 
 
-
+        misc:AddButton({
+            Name = "Remove Lava",
+            Callback = function()
+                if workspace:FindFirstChild("Map") then
+                    for i,v in pairs(workspace.Map:GetDescendants()) do
+                        if v ~= nil and v:IsA("Part") and v.Name == "Lava" and v:FindFirstChild("TouchInterest") then
+                            v:Destroy()
+                        end
+                    end
+                end
+            end
+        })
     end
     -- Server
     do
@@ -716,74 +825,6 @@ credit:AddButton({
         end)
     end
 })
-
-function tp(x,y,z)
-    -- SETTING
-    local valtomove = 5
-    _G.noclip = false
-    _G.anchored = true
-
-    moving = true
-    if x < game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X then
-    while x < game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X do
-    wait()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X-valtomove,game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y,game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z))
-    end
-    end
-    if z < game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z then
-    while z < game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z do
-    wait()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X,game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y,game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z-valtomove))
-    end
-    end
-    if x > game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X then
-    while x > game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X do
-    wait()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X+valtomove,game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y,game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z))
-    end
-    end
-    if z > game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z then
-    while z > game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z do
-    wait()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X,game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y,game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z+valtomove))
-    end
-    end
-    if y < game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y then
-    while y < game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y do
-    wait()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X,game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y-valtomove,game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z))
-    end
-    end
-    if y > game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y then
-    while y > game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y do
-    wait()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Position.X,game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Y+valtomove,game.Players.LocalPlayer.Character.HumanoidRootPart.Position.Z))
-    end
-    end
-    moving = false
-    game.Players.LocalPlayer.Character:MoveTo(Vector3.new(x,y,z))
-    if anchored == true then
-    game.Players.LocalPlayer.Character.Head.Anchored = false
-    end
-end
-
-spawn(function()
-    game:getService("RunService"):BindToRenderStep("",0,function()
-    if not game.Players.LocalPlayer.Character:findFirstChildOfClass("Humanoid") then return end
-        if moving == true then
-            if _G.noclip == true then
-                game.Players.LocalPlayer.Character:findFirstChildOfClass("Humanoid"):ChangeState(11)
-            end
-            if _G.anchored == true then
-                game.Players.LocalPlayer.Character.Head.Anchored = true
-            end
-        end
-    end)
-end)
-
-function tp_V2(x,y,z)
-    -- i will done after exam ;-;
-end
 
 function makenotif(title,content,times,decal)
     library:MakeNotification({
