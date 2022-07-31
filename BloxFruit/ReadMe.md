@@ -1,4 +1,8 @@
-## Loadstring:
-```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/Rbx_Script/main/BloxFruit/Source.lua", true))()
-```
+## Notice
+Recently, i start rewrite blox fruit script, also source will obfuscate it after i done rewrite.
+
+# Freature List
+
+-------------
+| Chest Farm |
+| 
